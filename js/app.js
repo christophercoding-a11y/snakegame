@@ -24,7 +24,7 @@ class Game {
 
         this.speed = 100
 
-        this.changingDirection= false
+        this.changingDirection = false
 
         this.foodX = 0
         this.foodY = 0
@@ -34,6 +34,8 @@ class Game {
             prevScore: 0,
             hiScore: 0
         }
+
+        this.displayScore = document.getElementById('score')
     }
 
     startGame() {
@@ -71,7 +73,7 @@ class Game {
             return
         }
 
-
+        this.displayScore.innerText = this.score.currScore
         this.changingDirection = false
         // make a timer
         /** setTimeout(callback function, time in ms) */
@@ -139,13 +141,14 @@ class Game {
 
         // when snake eats food
         const hasEatenFood = snake[0].x === this.foodX && snake[0].y === this.foodY
+        // console.log(hasEatenFood)
 
         if (hasEatenFood) {
             this.score.currScore+= 10
             this.setScores()
             this.speed-= 5
-            const displayScore = document.getElementById('score')
-            displayScore.innerText = this.score.currScore
+            // const displayScore = document.getElementById('score')
+            // displayScore.innerText = this.score.currScore
             this.generateFood()
         } else {
             snake.pop()
@@ -191,8 +194,6 @@ class Game {
 
     // 4 change direction
     changeDirection(e) {
-        
-
         const LEFT = 37
         const RIGHT = 39
         const UP = 38
@@ -219,7 +220,7 @@ class Game {
         }
 
         if (keyPressed === RIGHT && !goingLeft) {
-            this.dy = 10
+            this.dx = 10
             this.dy = 0
         }
 
