@@ -28,11 +28,46 @@ class Game {
 
         this.foodX = 0
         this.foodY = 0
+
+        this.score = {
+            currScore: 0,
+            prevScore: 0,
+            hiScore: 0
+        }
+    }
+
+    startGame() {
+        // console.log('start game')
+        this.snake = [
+            {x: 200, y: 200},
+            {x: 190, y: 200},
+            {x: 180, y: 200},
+            {x: 170, y: 200},
+            {x: 160, y: 200},
+        ]
+
+        this.dx = 10
+        this.dy = 0
+
+        this.speed = 100
+
+        this.foodX = 0
+        this.foodY = 0
+
+        this.score = {
+            currScore: 0,
+            prevScore: this.score.prevScore,
+            hiScore: this.score.hiScore
+        }
+
+        snake.init()
+        snake.generateFood()
     }
 
     init() {
         
         if (this.hasGameEnded()) {
+            this.setPrevScore()
             return
         }
 
@@ -70,7 +105,7 @@ class Game {
 
         snake.forEach(snakePart => {
             snakeBoardCtx.fillStyle = this.snakeColor
-            snakeBoardCtx.strokeStyle = this.snakeBoard
+            snakeBoardCtx.strokeStyle = this.snakeBorder
 
             snakeBoardCtx.fillRect(snakePart.x, snakePart.y, 10, 10)
             snakeBoardCtx.strokeRect(snakePart.x, snakePart.y, 10, 10)
@@ -106,11 +141,36 @@ class Game {
         const hasEatenFood = snake[0].x === this.foodX && snake[0].y === this.foodY
 
         if (hasEatenFood) {
+            this.score.currScore+= 10
+            this.setScores()
+            this.speed-= 5
+            const displayScore = document.getElementById('score')
+            displayScore.innerText = this.score.currScore
             this.generateFood()
         } else {
             snake.pop()
         }
 
+    }
+
+    // set scores
+    setScores() {
+        const hiScoreDisplay = document.getElementById('hiScore')
+
+        if (this.score.currScore > this.score.hiScore) {
+            this.score.hiScore = this.score.currScore
+        }
+
+        hiScoreDisplay.innerText = this.score.hiScore
+    }
+
+    setPrevScore() {
+        const prevScoreDisplay = document.getElementById('prevScore')
+
+        if (this.hasGameEnded()) {
+            this.score.prevScore = this.score.currScore
+            prevScoreDisplay.innerText = this.score.prevScore
+        }
     }
 
     hasGameEnded() {
@@ -185,8 +245,17 @@ class Game {
 
 const snake = new Game()
 
+const gameBtn = document.getElementById('gameBtn')
+
+gameBtn.addEventListener('click', ()=> {
+    // console.log('click')
+    snake.startGame()
+})
+
 snake.init()
 
 document.addEventListener('keydown', ()=> {
     snake.changeDirection(event)
 })
+
+snake.generateFood()
